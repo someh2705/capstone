@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import argparse
 import json
 import threading
@@ -130,19 +129,27 @@ class TreeDNController:
         self.write_pit_rule(switch_conn, content_name, mcast_id)
 
     def write_fib_rule(self, switch_conn, content_name, egress_port):
+        name_bytes = content_name.encode('utf-8')
+        padded_name = name_bytes.ljust(128, b'\0')
+
+        prefix_len = len(name_bytes) * 8
+
         table_entry = self.p4info_helper.buildTableEntry(
-            table_name="MyIngress.fib",
-            match_fields={"hdr.treedn_name.name": (content_name.encode('utf-8'), 32)}, # LPM, 32비트 접두사로 가정
-            action_name="MyIngress.treedn_forward",
+            table_name="IngressImpl.fib",
+            match_fields={"hdr.treedn_name.name": (padded_name, prefix_len)},
+            action_name="IngressImpl.treedn_forward",
             action_params={"egress_port": egress_port}
         )
         switch_conn.WriteTableEntry(table_entry)
 
     def write_pit_rule(self, switch_conn, content_name, mcast_group_id):
+        name_bytes = content_name.encode('utf-8')
+        padded_name = name_bytes.ljust(128, b'\0')
+
         table_entry = self.p4info_helper.buildTableEntry(
-            table_name="MyIngress.pit",
-            match_fields={"hdr.treedn_name.name": content_name.encode('utf-8')}, # Exact Match
-            action_name="MyIngress.set_multicast_group",
+            table_name="IngressImpl.pit",
+            match_fields={"hdr.treedn_name.name": padded_name},
+            action_name="IngressImpl.set_multicast_group",
             action_params={"mcast_group_id": mcast_group_id}
         )
         switch_conn.WriteTableEntry(table_entry)

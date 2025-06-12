@@ -1,0 +1,252 @@
+{
+    "hosts": {
+        "h1": {},
+        "c1": {},
+        "c2": {},
+        "c3": {}
+    },
+    "switches": {
+        "s1": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50051
+        },
+        "s2": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50052
+        },
+        "s3": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50053
+        },
+        "s4": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50054
+        },
+        "s5": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50055
+        },
+        "s6": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50056
+        },
+        "s7": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50057
+        },
+        "s8": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50058
+        },
+        "s9": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50059
+        },
+        "s10": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50060
+        },
+        "s11": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50061
+        },
+        "s12": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50062
+        },
+        "s13": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50063
+        },
+        "s14": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50064
+        },
+        "s15": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50065
+        },
+        "s16": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50066
+        },
+        "s17": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50067
+        },
+        "s18": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50068
+        },
+        "s19": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50069
+        },
+        "s20": {
+            "bmv2_json": "build/treedn.json",
+            "p4rt_port": 50070
+        }
+    },
+    "links": [
+        [
+            "s1",
+            "s2"
+        ],
+        [
+            "s1",
+            "s3"
+        ],
+        [
+            "s1",
+            "s4"
+        ],
+        [
+            "s1",
+            "s5"
+        ],
+        [
+            "s1",
+            "s9"
+        ],
+        [
+            "s1",
+            "s12"
+        ],
+        [
+            "s1",
+            "s13"
+        ],
+        [
+            "s1",
+            "s15"
+        ],
+        [
+            "s1",
+            "s18"
+        ],
+        [
+            "s1",
+            "s19"
+        ],
+        [
+            "s1",
+            "s20"
+        ],
+        [
+            "s2",
+            "s4"
+        ],
+        [
+            "s3",
+            "s5"
+        ],
+        [
+            "s3",
+            "s10"
+        ],
+        [
+            "s3",
+            "c2"
+        ],
+        [
+            "s4",
+            "s6"
+        ],
+        [
+            "s4",
+            "s7"
+        ],
+        [
+            "s4",
+            "s14"
+        ],
+        [
+            "s4",
+            "s17"
+        ],
+        [
+            "s4",
+            "h1"
+        ],
+        [
+            "s5",
+            "s6"
+        ],
+        [
+            "s5",
+            "s8"
+        ],
+        [
+            "s5",
+            "s13"
+        ],
+        [
+            "s5",
+            "s16"
+        ],
+        [
+            "s6",
+            "s7"
+        ],
+        [
+            "s7",
+            "s8"
+        ],
+        [
+            "s7",
+            "s9"
+        ],
+        [
+            "s7",
+            "s10"
+        ],
+        [
+            "s7",
+            "s18"
+        ],
+        [
+            "s7",
+            "c1"
+        ],
+        [
+            "s8",
+            "s11"
+        ],
+        [
+            "s8",
+            "s12"
+        ],
+        [
+            "s8",
+            "s14"
+        ],
+        [
+            "s8",
+            "s20"
+        ],
+        [
+            "s9",
+            "s11"
+        ],
+        [
+            "s9",
+            "s15"
+        ],
+        [
+            "s15",
+            "s16"
+        ],
+        [
+            "s15",
+            "s17"
+        ],
+        [
+            "s15",
+            "s19"
+        ],
+        [
+            "s16",
+            "c3"
+        ]
+    ]
+}

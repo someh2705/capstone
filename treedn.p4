@@ -3,6 +3,9 @@
 
 const bit<16> TYPE_TREEDN = 0x1234;
 
+typedef bit<9> port_t;
+typedef bit<16> mcast_grp_t;
+
 header ethernet_t {
     bit<48> dstAddr;
     bit<48> srcAddr;
@@ -20,13 +23,17 @@ header treedn_name_h {
     varbit<1024> name;
 }
 
+struct metadata {
+    /* empty */
+}
+
 struct headers {
     ethernet_t ethernet;
     treedn_h treedn;
     treedn_name_h treedn_name;
 }
 
-parser ParseImpl(packet_in packet,
+parser ParserImpl(packet_in packet,
                  out headers hdr,
                  inout metadata meta,
                  inout standard_metadata_t standard_metadata) {
@@ -46,12 +53,12 @@ parser ParseImpl(packet_in packet,
     }
 
     state parse_treedn_name {
-        packet.extract(hdr.treedn_name, hdr.treedn.name_length * 8);
+        packet.extract(hdr.treedn_name, (bit<32>) (hdr.treedn.name_length * 8));
         transition accept;
     }
 }
 
-control VerifyChecksum(inout headers hdr,
+control VerifyChecksumImpl(inout headers hdr,
                        inout metadata meta) {
     apply {}
 }
@@ -117,10 +124,10 @@ control IngressImpl(inout headers hdr,
             hdr.treedn.hop_limit = hdr.treedn.hop_limit - 1;
 
             if (hdr.treedn.packet_type == 0x1) {
-                apply(forwarding_information);
+                forwarding_information.apply();
             }
             else if (hdr.treedn.packet_type == 0x2) {
-                apply(pending_interest);
+                pending_interest.apply();
             }
         }
     }
@@ -132,12 +139,12 @@ control EgressImpl(inout headers hdr,
     apply {}
 }
 
-control ComputeChecksum(inout headers hdr,
+control ComputeChecksumImpl(inout headers hdr,
                         inout metadata meta) {
     apply {}
 }
 
-control DeparserImpl(packet_out packetj,
+control DeparserImpl(packet_out packet,
                      in headers hdr) {
     apply {
         packet.emit(hdr.ethernet);
@@ -150,9 +157,9 @@ control DeparserImpl(packet_out packetj,
 
 V1Switch(
     ParserImpl(),
-    VerifyChecksum(),
+    VerifyChecksumImpl(),
     IngressImpl(),
     EgressImpl(),
-    ComputeChecksum(),
+    ComputeChecksumImpl(),
     DeparserImpl()
 ) main;
