@@ -11,9 +11,12 @@ pkg_check_modules(NS3 REQUIRED
   ns3-internet
   ns3-point-to-point
   ns3-applications
+  ns3-netanim
 )
 
-add_executable(capstone src/main.cpp)
+file(GLOB_RECURSE ALL_SOURCES "source/*.cc")
 
-target_include_directories(capstone PRIVATE ${NS3_INCLUDE_DIRS})
+add_executable(capstone ${ALL_SOURCES})
+
+target_include_directories(capstone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/source ${NS3_INCLUDE_DIRS})
 target_link_libraries(capstone PRIVATE ${NS3_LIBRARIES})

@@ -229,4 +229,6 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+GEMINI.md
+
 # End of https://www.toptal.com/developers/gitignore/api/python,cmake,c++,ninja

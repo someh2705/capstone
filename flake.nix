@@ -32,6 +32,8 @@
 
               ns-3
               python3
+
+              wireshark
             ];
 
             shellHook =''
