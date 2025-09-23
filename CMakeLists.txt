@@ -40,14 +40,14 @@ pkg_check_modules(NS3 REQUIRED
   ns3-stats
   ns3-csma
   ns3-sixlowpan
-  ns3-point-to-point-layout 
+  ns3-point-to-point-layout
   ns3-internet-apps
   ns3-olsr
   ns3-fd-net-device
   ns3-uan
 )
 
-file(GLOB_RECURSE ALL_SOURCES "source/*.cc")
+file(GLOB_RECURSE ALL_SOURCES "source/main.cc")
 
 add_executable(capstone ${ALL_SOURCES})
 
