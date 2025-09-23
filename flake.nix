@@ -34,10 +34,6 @@
           nativeBuildInputs = buildTools;
           buildInputs = dependencies;
           packages = devTools;
-
-          shellHook = ''
-            echo "Capstone C++/Nix professional envrionment activated!"
-          '';
         };
       });
 }
