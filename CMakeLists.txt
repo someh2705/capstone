@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(PkgConfig REQUIRED)
+pkg_check_modules(YAML REQUIRED yaml-cpp)
 pkg_check_modules(NS3 REQUIRED
   ns3-applications
   ns3-core
@@ -47,9 +48,20 @@ pkg_check_modules(NS3 REQUIRED
   ns3-uan
 )
 
-file(GLOB_RECURSE ALL_SOURCES "source/main.cc")
+set(PROJECT_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
-add_executable(capstone ${ALL_SOURCES})
+set(PROJECT_SOURCES
+  source/main.cpp
+  source/utils/setup.cpp
+  source/scenario/basic-multicast.cpp
+  source/scenario/csma-multicast.cpp
+  source/scenario/basic-amt.cpp
+)
 
-target_include_directories(capstone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/source ${NS3_INCLUDE_DIRS})
-target_link_libraries(capstone PRIVATE ${NS3_LIBRARIES})
+add_executable(capstone ${PROJECT_SOURCES})
+
+
+target_include_directories(capstone PRIVATE ${PROJECT_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/source ${NS3_INCLUDE_DIRS} ${YAML_INCLUDE_DIRS})
+target_link_libraries(capstone PRIVATE ${NS3_LIBRARIES} ${YAML_LIBRARIES})

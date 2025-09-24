@@ -13,6 +13,7 @@
 
         dependencies = with pkgs; [
           ns-3
+          yaml-cpp
         ];
 
         buildTools = with pkgs; [
