@@ -284,7 +284,7 @@ Topology::Topology(std::string& filename)
             ObjectFactory factory;
             factory.SetTypeId("GatewayApp");
             Ptr<GatewayApp> gatewayApp = factory.Create<GatewayApp>();
-            gatewayApp->Setup(app.unicast, multicastGroup, app.port);
+            gatewayApp->Setup(app.unicast);
             n->AddApplication(gatewayApp);
             container.Add(gatewayApp);
         }

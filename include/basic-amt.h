@@ -48,7 +48,7 @@ class GatewayApp : public ns3::Application
     GatewayApp();
     ~GatewayApp() override;
 
-    void Setup(uint16_t unicastPort, ns3::Ipv4Address multicastGroup, uint16_t multicastPort);
+    void Setup(uint16_t unicastPort);
     void HandleRead(ns3::Ptr<ns3::Socket> socket);
 
   protected:
@@ -58,8 +58,6 @@ class GatewayApp : public ns3::Application
     ns3::Ptr<ns3::Socket> m_recvSocket;
     ns3::Ptr<ns3::Socket> m_sendSocket;
     uint16_t m_unicastPort;
-    ns3::Ipv4Address m_multicastGroup;
-    uint16_t m_multicastPort;
 
     void StartApplication() override;
     void StopApplication() override;
