@@ -14,11 +14,27 @@ nodes:
   - { name: client1 }
   - { name: client2 }
   - { name: client3 }
+  - { name: sink1 }
 
 links:
-  - { subnet: "10.1.1.0", mask: "255.255.255.0", nodes: [host, router1] }
-  - { subnet: "10.1.2.0", mask: "255.255.255.0", nodes: [router1, router2] }
-  - { subnet: "10.1.3.0", mask: "255.255.255.0", nodes: [router1, client1] }
-  - { subnet: "10.1.4.0", mask: "255.255.255.0", nodes: [router2, router3] }
-  - { subnet: "10.1.6.0", mask: "255.255.255.0", nodes: [router3, sink1] }
-  - { subnet: "10.1.7.0", mask: "255.255.255.0", nodes: [router3, client2, client3] }
+  - { name: link-host-r1, subnet: "10.1.1.0", mask: "255.255.255.0", nodes: [host, router1] }
+  - { name: link-r1-r2, subnet: "10.1.2.0", mask: "255.255.255.0", nodes: [router1, router2] }
+  - { name: link-r1-c1, subnet: "10.1.3.0", mask: "255.255.255.0", nodes: [router1, client1] }
+  - { name: link-r2-r3, subnet: "10.1.4.0", mask: "255.255.255.0", nodes: [router2, router3] }
+  - { name: link-r3-s1, subnet: "10.1.5.0", mask: "255.255.255.0", nodes: [router3, sink1] }
+  - { name: link-r3-c2_c3, subnet: "10.1.6.0", mask: "255.255.255.0", nodes: [router3, client2, client3] }
+
+multicast:
+  source: host
+  group: "225.1.2.4"
+  routes:
+    - { node: host, out: link-host-r1 }
+    - { node: router1, in: link-host-r1, out: link-r1-r2 }
+    - { node: router2, in: link-r1-r2, out: link-r2-r3 }
+    - { node: router3, in: link-r2-r3, out: [link-r3-s1, link-r3-c2_c3] }
+
+applications:
+  - { type: "OnOff", node: host, target: "225.1.2.4", port: 9999, rate: "1KiB/s", packetSize: 1024, start: 1.0, stop: 20.0 }
+  - { type: "PacketSink", node: sink1, port: 9999, start: 0.9, stop: 20.0 }
+
+pcap: "basic-multicast"
