@@ -205,16 +205,13 @@ GatewayApp::HandleRead(Ptr<Socket> socket)
         packet->RemoveAtStart(4);
 
         Ipv4Header ipv4Header;
-        packet->PeekHeader(ipv4Header);
+        packet->RemoveHeader(ipv4Header);
 
         UdpHeader udpHeader;
-        packet->PeekHeader(udpHeader);
+        packet->RemoveHeader(udpHeader);
 
         Ipv4Address multicastGroup = ipv4Header.GetDestination();
         uint16_t multicastPort = udpHeader.GetDestinationPort();
-
-        packet->RemoveHeader(ipv4Header);
-        packet->RemoveHeader(udpHeader);
 
         m_sendSocket->SendTo(packet, 0, InetSocketAddress(multicastGroup, multicastPort));
     }
