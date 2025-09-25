@@ -1,0 +1,74 @@
+# ----------------------------
+#                                     dummy2, dummy3                               dummy4
+#                                        /                                          /
+#  host -> router1 -> router2 -> router3 -> router4 -> router5 -> router6 -> router7 -> router8 -> sink3, sink4
+#                 \                     \                     \                                \
+#                dummy1               sink1                 router9 -> sink2                   sink5
+# ---------------------------
+
+nodes:
+  - { name: host }
+  - { name: router1 }
+  - { name: router2 }
+  - { name: router3 }
+  - { name: router4 }
+  - { name: router5 }
+  - { name: router6 }
+  - { name: router7 }
+  - { name: router8 }
+  - { name: router9 }
+  - { name: sink1 }
+  - { name: sink2 }
+  - { name: sink3 }
+  - { name: sink4 }
+  - { name: sink5 }
+  - { name: dummy1 }
+  - { name: dummy2 }
+  - { name: dummy3 }
+  - { name: dummy4 }
+
+links:
+  - { name: link-h-r1, subnet: "10.1.0.0", mask: "255.255.255.0", nodes: [host, router1] }
+  - { name: link-r1-r2, subnet: "10.1.1.0", mask: "255.255.255.0", nodes: [router1, router2] }
+  - { name: link-r2-r3, subnet: "10.1.2.0", mask: "255.255.255.0", nodes: [router2, router3] }
+  - { name: link-r3-r4, subnet: "10.1.3.0", mask: "255.255.255.0", nodes: [router3, router4] }
+  - { name: link-r4-r5, subnet: "10.1.4.0", mask: "255.255.255.0", nodes: [router4, router5] }
+  - { name: link-r5-r6, subnet: "10.1.5.0", mask: "255.255.255.0", nodes: [router5, router6] }
+  - { name: link-r6-r7, subnet: "10.1.6.0", mask: "255.255.255.0", nodes: [router6, router7] }
+  - { name: link-r7-r8, subnet: "10.1.7.0", mask: "255.255.255.0", nodes: [router7, router8] }
+  - { name: link-r5-r9, subnet: "10.1.8.0", mask: "255.255.255.0", nodes: [router5, router9] }
+
+  - { name: link-r3-s1, subnet: "10.2.1.0", mask: "255.255.255.0", nodes: [router3, sink1] }
+  - { name: link-r9-s2, subnet: "10.2.2.0", mask: "255.255.255.0", nodes: [router9, sink2] }
+  - { name: link-r8-s3_s4, subnet: "10.2.3.0", mask: "255.255.255.0", nodes: [router8, sink3, sink4] }
+  - { name: link-r8-s5, subnet: "10.2.4.0", mask: "255.255.255.0", nodes: [router8, sink5] }
+
+  - { name: link-r1-d1, subnet: "10.3.1.0", mask: "255.255.255.0", nodes: [router1, dummy1] }
+  - { name: link-r3-d2_d3, subnet: "10.3.2.0", mask: "255.255.255.0", nodes: [router3, dummy2, dummy3] }
+  - { name: link-r7-d4, subnet: "10.3.3.0", mask: "255.255.255.0", nodes: [router7, dummy4] }
+
+multicast:
+  source: host
+  group: "225.1.2.5"
+  routes:
+    - { node: host, out: link-h-r1 }
+    - { node: router1, in: link-h-r1, out: [link-r1-r2] }
+    - { node: router2, in: link-r1-r2, out: link-r2-r3 }
+    - { node: router3, in: link-r2-r3, out: [link-r3-r4, link-r3-s1] }
+    - { node: router4, in: link-r3-r4, out: link-r4-r5 }
+    - { node: router5, in: link-r4-r5, out: [link-r5-r6, link-r5-r9] }
+    - { node: router6, in: link-r5-r6, out: link-r6-r7 }
+    - { node: router7, in: link-r6-r7, out: [link-r7-r8] }
+    - { node: router8, in: link-r7-r8, out: [link-r8-s3_s4, link-r8-s5] }
+    - { node: router9, in: link-r5-r9, out: link-r9-s2 }
+
+applications:
+  - { type: "OnOff", node: host, target: "225.1.2.5", port: 9999, rate: "1KiB/s", packetSize: 1024, start: 1.0, stop: 20.0 }
+  - { type: "PacketSink", node: sink1, port: 9999, start: 0.9, stop: 20.0 }
+  - { type: "PacketSink", node: sink2, port: 9999, start: 0.9, stop: 20.0 }
+  - { type: "PacketSink", node: sink3, port: 9999, start: 0.9, stop: 20.0 }
+  - { type: "PacketSink", node: sink4, port: 9999, start: 0.9, stop: 20.0 }
+  - { type: "PacketSink", node: sink5, port: 9999, start: 0.9, stop: 20.0 }
+
+pcap: "complex-multicast"
+

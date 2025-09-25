@@ -9,7 +9,7 @@
 BasicMulticast::BasicMulticast(int argc, char* argv[])
 {
     using namespace ns3;
-    std::string filename{"../resources/basic-multicast.yaml"};
+    std::string filename{"../resources/complex-multicast.yaml"};
 
     std::cout << "topology setup: " << filename << std::endl;
     Topology topology(filename);
