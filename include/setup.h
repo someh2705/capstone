@@ -30,12 +30,22 @@ struct AppConfig
 {
     std::string type;
     std::string node;
-    std::string target;
     uint16_t port;
-    std::string rate;
-    uint32_t packetSize;
     double start;
     double stop;
+
+    // For OnOff
+    std::string target;
+    std::string rate;
+    uint32_t packetSize;
+
+    // For Relay
+    std::string gateway;
+    uint16_t unicast;
+    std::string link;
+
+    // For Gateway
+    std::string relay;
 };
 
 class Topology
@@ -51,11 +61,6 @@ class Topology
     ns3::Ptr<ns3::Node> GetNode(std::string name) const
     {
         return m_nodeMap.at(name);
-    }
-
-    ns3::Ipv4Address GetIpv4(std::string name) const
-    {
-        return m_linkMap.at(name).interfaces.GetAddress(0);
     }
 
     std::string GetMcSource() const
@@ -92,6 +97,7 @@ class Topology
     std::string m_pcap;
 
     uint32_t FindInterfaceIndex(ns3::Ptr<ns3::Node>, const std::string&);
+    ns3::Ipv4Address GetAddressOnLink(ns3::Ptr<ns3::Node>, const std::string&);
 };
 
 #endif

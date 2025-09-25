@@ -1,5 +1,8 @@
 #include "setup.h"
 
+#include "basic-amt.h"
+
+#include <ns3/application-container.h>
 #include <ns3/assert.h>
 #include <ns3/boolean.h>
 #include <ns3/channel.h>
@@ -21,6 +24,7 @@
 #include <ns3/node-container.h>
 #include <ns3/node.h>
 #include <ns3/nstime.h>
+#include <ns3/object-factory.h>
 #include <ns3/object.h>
 #include <ns3/on-off-helper.h>
 #include <ns3/packet-sink-helper.h>
@@ -173,6 +177,24 @@ Topology::Topology(std::string& filename)
             {
                 app.stop = a["stop"].as<double>();
             }
+            // For Relay
+            if (a["gateway"])
+            {
+                app.gateway = a["gateway"].as<std::string>();
+            }
+            if (a["unicast"])
+            {
+                app.unicast = a["unicast"].as<uint16_t>();
+            }
+            if (a["link"])
+            {
+                app.link = a["link"].as<std::string>();
+            }
+            // For Gateway
+            if (a["relay"])
+            {
+                app.relay = a["relay"].as<std::string>();
+            }
             m_apps.push_back(app);
         }
     }
@@ -227,6 +249,7 @@ Topology::Topology(std::string& filename)
     for (auto& app : m_apps)
     {
         Ptr<Node> n = GetNode(app.node);
+        ApplicationContainer container;
 
         if (app.type == "OnOff")
         {
@@ -237,21 +260,41 @@ Topology::Topology(std::string& filename)
             onoff.SetAttribute("PacketSize", UintegerValue(app.packetSize));
 
             ApplicationContainer container = onoff.Install(n);
-            container.Start(Seconds(app.start));
-            container.Stop(Seconds(app.stop));
         }
         else if (app.type == "PacketSink")
         {
             PacketSinkHelper sink("ns3::UdpSocketFactory",
                                   Address(InetSocketAddress(Ipv4Address::GetAny(), app.port)));
-            ApplicationContainer container = sink.Install(n);
-            container.Start(Seconds(app.start));
-            container.Stop(Seconds(app.stop));
+            container = sink.Install(n);
+        }
+        else if (app.type == "Relay")
+        {
+            ObjectFactory factory;
+            factory.SetTypeId("RelayApp");
+            Ptr<RelayApp> relayApp = factory.Create<RelayApp>();
+
+            Ptr<Node> gatewayNode = GetNode(app.gateway);
+            Ipv4Address gatewayAddr = GetAddressOnLink(gatewayNode, app.link);
+            relayApp->Setup(gatewayAddr, app.unicast, multicastGroup, app.port);
+            n->AddApplication(relayApp);
+            container.Add(relayApp);
+        }
+        else if (app.type == "Gateway")
+        {
+            ObjectFactory factory;
+            factory.SetTypeId("GatewayApp");
+            Ptr<GatewayApp> gatewayApp = factory.Create<GatewayApp>();
+            gatewayApp->Setup(app.unicast, multicastGroup, app.port);
+            n->AddApplication(gatewayApp);
+            container.Add(gatewayApp);
         }
         else
         {
             NS_FATAL_ERROR("Unknown application type: " + app.type);
         }
+
+        container.Start(Seconds(app.start));
+        container.Stop(Seconds(app.stop));
     }
 
     if (config["pcap"])
@@ -284,4 +327,25 @@ Topology::FindInterfaceIndex(Ptr<Node> node, const std::string& link)
     NS_FATAL_ERROR("Node not found on link: " << link);
 
     return -1;
+}
+
+Ipv4Address
+Topology::GetAddressOnLink(Ptr<Node> node, const std::string& link)
+{
+    auto it = m_linkMap.find(link);
+    if (it == m_linkMap.end())
+    {
+        NS_FATAL_ERROR("Link name not found: " << link);
+    }
+
+    for (uint32_t i = 0; i < it->second.devices.GetN(); ++i)
+    {
+        if (it->second.devices.Get(i)->GetNode() == node)
+        {
+            return it->second.interfaces.GetAddress(i);
+        }
+    }
+
+    NS_FATAL_ERROR("Node " << Names::FindName(node) << " not found on link: " << link);
+    return Ipv4Address();
 }

@@ -3,7 +3,6 @@
 #include "setup.h"
 
 #include <ns3/ipv4-address.h>
-#include <ns3/log.h>
 #include <ns3/simulator.h>
 
 BasicMulticast::BasicMulticast(int argc, char* argv[])

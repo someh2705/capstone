@@ -1,9 +1,7 @@
-#include "basic-multicast.h"
-
-#include <ns3/log.h>
+#include "basic-amt.h"
 
 int
 main(int argc, char* argv[])
 {
-    BasicMulticast multicast(argc, argv);
+    BasicAmt amt(argc, argv);
 }
