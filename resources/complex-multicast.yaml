@@ -1,9 +1,10 @@
 # ----------------------------
-#                                     dummy2, dummy3                               dummy4
-#                                        /                                          /
+#
+#                                     dummy2, dummy3                                dummy4
+#                                        /                                            /
 #  host -> router1 -> router2 -> router3 -> router4 -> router5 -> router6 -> router7 -> router8 -> sink3, sink4
-#                 \                     \                     \                                \
-#                dummy1               sink1                 router9 -> sink2                   sink5
+#                                       \                     \                                \
+#                                      sink1                 router9 -> sink2                   sink5
 # ---------------------------
 
 nodes:

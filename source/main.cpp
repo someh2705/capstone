@@ -1,7 +1,8 @@
 #include "basic-amt.h"
+#include "basic-multicast.h"
 
 int
 main(int argc, char* argv[])
 {
-    BasicAmt amt(argc, argv);
+    BasicMulticast amt(argc, argv);
 }

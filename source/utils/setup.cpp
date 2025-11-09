@@ -29,7 +29,9 @@
 #include <ns3/on-off-helper.h>
 #include <ns3/packet-sink-helper.h>
 #include <ns3/ptr.h>
+#include <ns3/simulator.h>
 #include <ns3/string.h>
+#include <ns3/udp-l4-protocol.h>
 
 #include <cstdint>
 #include <string>
@@ -241,7 +243,10 @@ Topology::Topology(std::string& filename)
             {
                 interfaces.push_back(FindInterfaceIndex(node, out));
             }
-            rt->AddMulticastRoute(sourceAddr, multicastGroup, index, interfaces);
+
+            Simulator::Schedule(Seconds(12), [sourceAddr, multicastGroup, index, interfaces, rt]() {
+                rt->AddMulticastRoute(sourceAddr, multicastGroup, index, interfaces);
+            });
         }
     }
     std::cout << "application setting" << std::endl;
